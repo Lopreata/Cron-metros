@@ -8,6 +8,11 @@ App Android para contar dias com temáticas personalizadas — dias dormindo bem
 
 👉 **[Clique aqui para baixar o APK mais recente](../../releases/latest)**
 
+📱 **Link direto para o celular:**
+```
+https://github.com/Lopreata/Cron-metros/releases/download/latest-build/cron-metros.apk
+```
+
 > Para instalar: ative **"Fontes desconhecidas"** (ou "Instalar apps desconhecidos") nas configurações do Android, abra o `.apk` e instale.
 
 ---

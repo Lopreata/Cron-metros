@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "Cron-metros",
+    "slug": "cron-metros",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#181825"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.cronmetros.app"
+    },
+    "android": {
+      "package": "com.cronmetros.app",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#181825"
+      },
+      "permissions": [],
+      "userInterfaceStyle": "dark"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

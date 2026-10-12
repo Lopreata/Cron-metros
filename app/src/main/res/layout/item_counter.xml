@@ -140,8 +140,7 @@
             android:layout_height="36dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="6dp"
-            android:src="@drawable/ic_restart"
-            android:colorFilter="#FF89B4FA" />
+            android:src="@drawable/ic_restart" />
 
         <ImageButton
             android:id="@+id/btn_delete"
@@ -149,8 +148,7 @@
             android:layout_height="36dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="6dp"
-            android:src="@drawable/ic_delete"
-            android:colorFilter="#FFF38BA8" />
+            android:src="@drawable/ic_delete" />
     </LinearLayout>
 
 </LinearLayout>

@@ -15,6 +15,7 @@ import com.cronmetros.app.adapter.CounterAdapter;
 import com.cronmetros.app.model.Counter;
 import com.cronmetros.app.storage.CounterStorage;
 import com.cronmetros.app.ui.AddCounterSheet;
+import com.cronmetros.app.ui.HistorySheet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 import java.util.Set;
@@ -65,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
             @Override public void onDelete(Counter c) {
                 confirm("Excluir \"" + c.name + "\"?",
                     "Esta ação não pode ser desfeita.", () -> { counters.remove(c); persist(); });
+            }
+            @Override public void onHistory(Counter c) {
+                HistorySheet.newInstance(c).show(getSupportFragmentManager(), "history");
             }
             @Override public void onSelectionChanged(Set<String> ids) {
                 updateBulkBar(ids);

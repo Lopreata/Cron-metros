@@ -22,6 +22,7 @@ public class CounterAdapter extends RecyclerView.Adapter<CounterAdapter.VH> {
         void onToggle(Counter c);
         void onReset(Counter c);
         void onDelete(Counter c);
+        void onHistory(Counter c);
         void onSelectionChanged(Set<String> ids);
     }
 
@@ -94,11 +95,44 @@ public class CounterAdapter extends RecyclerView.Adapter<CounterAdapter.VH> {
             h.btnToggle.setColorFilter(0xFFFAB387);
         }
 
+        bindMilestone(h.chipMilestone, c);
+
         h.cbSelect.setOnClickListener(v -> toggle(c, h.getAdapterPosition()));
         h.itemView.setOnClickListener(v -> toggle(c, h.getAdapterPosition()));
-        h.btnToggle.setOnClickListener(v -> listener.onToggle(c));
-        h.btnReset.setOnClickListener(v -> listener.onReset(c));
-        h.btnDelete.setOnClickListener(v -> listener.onDelete(c));
+        h.btnToggle.setOnClickListener(v  -> listener.onToggle(c));
+        h.btnReset.setOnClickListener(v   -> listener.onReset(c));
+        h.btnDelete.setOnClickListener(v  -> listener.onDelete(c));
+        h.btnHistory.setOnClickListener(v -> listener.onHistory(c));
+    }
+
+    private void bindMilestone(Chip chip, Counter c) {
+        int next = c.nextMilestoneIndex();
+        int hi   = c.highestMilestoneIndex();
+
+        if (next == -1) {
+            // All milestones reached
+            chip.setText("🏆 1 ano+");
+            chip.setChipBackgroundColor(android.content.res.ColorStateList.valueOf(0x33F9E2AF));
+            chip.setTextColor(0xFFF9E2AF);
+            chip.setVisibility(View.VISIBLE);
+        } else if (hi >= 0) {
+            // Show highest achieved milestone
+            chip.setText("✓ " + Counter.MILESTONE_LABELS[hi]);
+            chip.setChipBackgroundColor(android.content.res.ColorStateList.valueOf(0x33A6E3A1));
+            chip.setTextColor(0xFFA6E3A1);
+            chip.setVisibility(View.VISIBLE);
+        } else {
+            // No milestone yet — show next
+            long remaining = Counter.MILESTONE_MS[next] - c.effectiveElapsedMs();
+            int daysLeft   = (int)(remaining / 86_400_000L);
+            String label   = daysLeft == 0
+                ? "próximo: " + Counter.MILESTONE_LABELS[next] + " (hoje!)"
+                : "próximo: " + Counter.MILESTONE_LABELS[next] + " (em " + daysLeft + "d)";
+            chip.setText(label);
+            chip.setChipBackgroundColor(android.content.res.ColorStateList.valueOf(0x22CBA6F7));
+            chip.setTextColor(0xFF9399B2);
+            chip.setVisibility(View.VISIBLE);
+        }
     }
 
     private void toggle(Counter c, int pos) {
@@ -115,22 +149,24 @@ public class CounterAdapter extends RecyclerView.Adapter<CounterAdapter.VH> {
         CheckBox cbSelect;
         View colorBar;
         TextView tvEmoji, tvName, tvDesc, tvDays, tvTime;
-        Chip chipPaused;
-        ImageButton btnToggle, btnReset, btnDelete;
+        Chip chipPaused, chipMilestone;
+        ImageButton btnToggle, btnReset, btnDelete, btnHistory;
 
         VH(@NonNull View v) {
             super(v);
-            cbSelect   = v.findViewById(R.id.cb_select);
-            colorBar   = v.findViewById(R.id.color_bar);
-            tvEmoji    = v.findViewById(R.id.tv_emoji);
-            tvName     = v.findViewById(R.id.tv_name);
-            tvDesc     = v.findViewById(R.id.tv_desc);
-            chipPaused = v.findViewById(R.id.chip_paused);
-            tvDays     = v.findViewById(R.id.tv_days);
-            tvTime     = v.findViewById(R.id.tv_time);
-            btnToggle  = v.findViewById(R.id.btn_toggle);
-            btnReset   = v.findViewById(R.id.btn_reset);
-            btnDelete  = v.findViewById(R.id.btn_delete);
+            cbSelect       = v.findViewById(R.id.cb_select);
+            colorBar       = v.findViewById(R.id.color_bar);
+            tvEmoji        = v.findViewById(R.id.tv_emoji);
+            tvName         = v.findViewById(R.id.tv_name);
+            tvDesc         = v.findViewById(R.id.tv_desc);
+            chipPaused     = v.findViewById(R.id.chip_paused);
+            chipMilestone  = v.findViewById(R.id.chip_milestone);
+            tvDays         = v.findViewById(R.id.tv_days);
+            tvTime         = v.findViewById(R.id.tv_time);
+            btnToggle      = v.findViewById(R.id.btn_toggle);
+            btnReset       = v.findViewById(R.id.btn_reset);
+            btnDelete      = v.findViewById(R.id.btn_delete);
+            btnHistory     = v.findViewById(R.id.btn_history);
         }
     }
 }

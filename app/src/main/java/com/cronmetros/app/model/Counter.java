@@ -15,6 +15,7 @@ public class Counter {
     public long totalPausedMs; // accumulated paused duration
     public long createdAt;
     public List<HistoryEntry> history = new ArrayList<>();
+    public Integer notifiedMilestone; // null = nenhum notificado ainda
 
     public static class HistoryEntry {
         public long startedAt;

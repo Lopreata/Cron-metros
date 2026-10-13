@@ -1,5 +1,8 @@
 package com.cronmetros.app;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -11,6 +14,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 import com.cronmetros.app.adapter.CounterAdapter;
 import com.cronmetros.app.model.Counter;
 import com.cronmetros.app.storage.CounterStorage;
@@ -19,6 +25,7 @@ import com.cronmetros.app.ui.HistorySheet;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -105,6 +112,10 @@ public class MainActivity extends AppCompatActivity {
         });
         findViewById(R.id.btn_bulk_clear).setOnClickListener(v -> adapter.clearSelection());
 
+        NotificationHelper.createChannels(this);
+        requestNotificationPermission();
+        scheduleMilestoneWorker();
+
         updateUI();
         handler.postDelayed(tick, 60_000);
     }
@@ -143,6 +154,27 @@ public class MainActivity extends AppCompatActivity {
         bulkBar.setVisibility(n > 0 ? View.VISIBLE : View.GONE);
         tvSelCount.setText(n + " selecionado" + (n > 1 ? "s" : ""));
         cbAll.setChecked(adapter.isAllSelected());
+    }
+
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1001);
+            }
+        }
+    }
+
+    private void scheduleMilestoneWorker() {
+        PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(
+                MilestoneWorker.class, 6, TimeUnit.HOURS)
+                .setInitialDelay(1, TimeUnit.HOURS)
+                .build();
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "milestone_check",
+                ExistingPeriodicWorkPolicy.KEEP,
+                req);
     }
 
     private void confirm(String title, String msg, Runnable action) {
